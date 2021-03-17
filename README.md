@@ -11,140 +11,133 @@ Taxonomies for products and languages: https://review.docs.microsoft.com/new-hop
 ![Automl notebooks](https://github.com/microsoft/solution-accelerator-many-models/workflows/Automl%20notebooks/badge.svg)
 ![Custom script notebooks](https://github.com/microsoft/solution-accelerator-many-models/workflows/Custom%20script%20notebooks/badge.svg)
 
-In the real world, many problems can be too complex to be solved by a single machine learning model. Whether that be predicting sales for each individual store, building a predictive maintanence model for hundreds of oil wells, or tailoring an experience to individual users, building a model for each instance can lead to improved results on many machine learning problems.
+現実の世界では多くの問題は複雑であり、単一の機械学習モデルでは解決できない場合があります。個々の店舗の売上を予測したり、何百もの油田の予測メンテナンスモデルを構築したり、個々のユーザーにエクスペリエンスを調整したりする場合でも、各インスタンスのモデルを構築すると、多くの機械学習の問題で結果が向上する可能性があります。
 
-This Pattern is very common across a wide variety of industries and applicable to many real world use cases. Below are some examples we have seen where this pattern is being used.
+このパターンは、多くのインダストリーでは非常に一般的であり、多くの実世界のユースケースに適用されています。以下は我々が今まで見てきた、このパターンが使用されているいくつかの例です。
 
-- Energy and utility companies building predictive maintenance models for thousands of oil wells, hundreds of wind turbines or hundreds of smart meters
+- エネルギーおよび公益事業会社は、何千もの油田、数百の風力タービン、または数百のスマートメーターの予測メンテナンスモデルを構築
 
-- Retail organizations building workforce optimization models for thousands of stores, campaign promotion propensity models, Price optimization models for hundreds of thousands of products they sell
+- 何千もの店舗の従業員最適化モデルを構築する小売企業、キャンペーンプロモーション傾向モデル、販売する数十万の製品の価格最適化モデル
 
-- Restaurant chains building demand forecasting models across thousands of restaurants  
+- 何千ものレストランで需要予測モデルを構築するレストランチェーン
 
-- Banks and financial institutes building models for cash replenishment for ATM Machine and for several ATMs or building personalized models for individuals
+- 銀行や金融機関は、ATM機械の入れ替えと、いくつかのATMのための現金補充のためのモデルを構築したり、個人のためのパーソナライズされたモデルを構築
 
-- Enterprises building revenue forecasting models at each division level
+- 各部門レベルで収益予測モデルを構築する企業
 
-- Document management companies building text analytics and legal document search models per each state
+- ドキュメント管理会社において各州ごとのテキスト分析モデルと法的文書検索モデルを構築
 
-Azure Machine Learning (AML) makes it easy to train, operate, and manage hundreds or even thousands of models. This repo will walk you through the end to end process of creating a many models solution from training to scoring to monitoring.
+Azure Machine Learning (AML) を使用すると、数百から数千のモデルのトレーニング、運用、管理が容易になります。このリポジトリは、トレーニングからスコアリング、モニタリングまで、Many models ソリューションを作成するエンドツーエンドのプロセスを通して説明します。
 
-## Prerequisites
+## 前提条件
 
-To use this solution accelerator, all you need is access to an [Azure subscription](https://azure.microsoft.com/free/) and an [Azure Machine Learning Workspace](https://docs.microsoft.com/azure/machine-learning/how-to-manage-workspace) that you'll create below.
+このソリューション アクセラレータを使用するには、[Azure サブスクリプション](https://azure.microsoft.com/free/)と、以下で作成する[Azure Machine Learning ワークスペース](https://docs.microsoft.com/ja-jp/azure/machine-learning/how-to-manage-workspace?tabs=python)へのアクセスが必要です。
 
-While it's not required, a basic understanding of Azure Machine Learning will be helpful for understanding the solution. The following resources can help introduce you to AML:
+必須ではありませんが、ソリューションを理解するためには、Azure Machine Learning の基本的な理解が役立ちます。以下のリソースは、AML を理解するのに役立ちます：
 
-1. [Azure Machine Learning Overview](https://azure.microsoft.com/services/machine-learning/)
-2. [Azure Machine Learning Tutorials](https://docs.microsoft.com/azure/machine-learning/tutorial-1st-experiment-sdk-setup)
+1. [Azure Machine Learning の概要](https://azure.microsoft.com/ja-jp/services/machine-learning/)
+2. [Azure Machine Learning のチュートリアル](https://docs.microsoft.com/ja-jp/azure/machine-learning/tutorial-1st-experiment-sdk-setup)
 3. [Azure Machine Learning Sample Notebooks on Github](https://github.com/Azure/MachineLearningNotebooks)
 
-## Getting started
+## はじめに
 
-### 1. Deploy Resources
+### 1. リソースの展開
 
-Start by deploying the resources to Azure. The button below will deploy Azure Machine Learning and its related resources:
+まず、リソースを Azure にデプロイします。次のボタンは、Azure Machine Learning と関連リソースをデプロイします：
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fsolution-accelerator-many-models%2Fmaster%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
-### 2. Configure Development Environment
+### 2. 開発環境の設定
 
-Next you'll need to configure your [development environment](https://docs.microsoft.com/azure/machine-learning/how-to-configure-environment) for Azure Machine Learning. We recommend using a [Notebook VM](https://docs.microsoft.com/azure/machine-learning/how-to-configure-environment#compute-instance) as it's the fastest way to get up and running. Follow the steps in [EnvironmentSetup.md](./EnvironmentSetup.md) to create a Notebook VM and clone the repo onto it.
+次に、Azure Machine Learning 用に開発環境を構成する必要があります。最も高速な起動方法なので、[コンピューティング インスタンス（旧 Notebook VM)](https://docs.microsoft.com/ja-jp/azure/machine-learning/how-to-configure-environment#compute-instance) を使用することをお勧めします。[EnvironmentSetup.md](./EnvironmentSetup.md)の手順に従って、コンピューティング インスタンスを作成し、リポジトリを複製します。
 
-### 3. Run Notebooks
+### 3. ノートブックの実行
 
-Once your development environment is set up, run through the Jupyter Notebooks sequentially following the steps outlined. By the end, you'll know how to train, score, and make predictions using the many models pattern on Azure Machine Learning.
+開発環境をセットアップしたら、説明されている手順に従って Jupyter ノートブックを順番に実行します。最終的には、Azure Machine Learning で many models パターンを使用してどのようにトレーニング、スコアリング、および予測を行うかを理解するることができます：
 
-There are two ways to train many models:
+Many models をトレーニングするには、次の 2 つの方法があります：
 
-1. Using a custom training script
-2. Using Automated ML
+1. カスタム トレーニング スクリプトの使用
+2. 自動 ML の使用
 
-However, the steps needed to set the workspace up and prepare the datasets are the same no matter which option you choose.
+ただしどのオプションを選択しても、ワークスペースを設定してデータセットを準備するために必要な手順は同じです。
 
-![Sequence of Notebooks](./images/mmsa-overview.png)
+![Sequence of Notebooks](./images/mmsa-overview_jp.png)
 
 
-## Contents
+## 内容
 
-In this repo, you'll train and score a forecasting model for each orange juice brand and for each store at a (simulated) grocery chain. By the end, you'll have forecasted sales by using up to 11,973 models to predict sales for the next few weeks.
+このリポジトリでは、(シミュレートされた)食料品チェーンで、各オレンジジュースブランドと各店舗の予測モデルをトレーニングしてスコアリングを実行します。最終的には、今後数週間の売上を予測するために最大 11,973 のモデルを使用して売上を予測することになります。
 
-The data used in this sample is simulated based on the [Dominick's Orange Juice Dataset](http://www.cs.unitn.it/~taufer/QMMA/L10-OJ-Data.html#(1)), sales data from a Chicago area grocery store.
+このサンプルで使用されるデータは、シカゴ地域の食料品店からの販売データである[ドミニクのオレンジジュースデータセット](http://www.cs.unitn.it/~taufer/QMMA/L10-OJ-Data.html#(1))に基づいてシミュレートされます。
 
 <img src="images/Flow_map.png" width="1000">
 
-The functionality is broken into the notebooks folders designed to be run sequentially.
+この機能は連続して実行されるように設計されたノートブック フォルダに分割されています。
 
-### Before training the models
+### モデル トレーニングの事前準備：
 
-| Notebook       | Description                                |
+| ノートブック       | 説明                                |
 |----------------|--------------------------------------------|
-| `00_Setup_AML_Workspace.ipynb`  | Creates and configures the AML Workspace, including deploying a compute cluster for training. |
-| `01_Data_Preparation.ipynb`     | Prepares the datasets that will be used during training and forecasting. |
+| `00_Setup_AML_Workspace.ipynb`  | トレーニング用のコンピューティング クラスターの展開を含む、AML ワークスペースを作成および構成します。 |
+| `01_Data_Preparation.ipynb`     | トレーニングおよび予測に使用されるデータセットを準備します。 |
 
-### Using a custom training script to train the models:
+### カスタム トレーニング スクリプトを使用してモデルをトレーニングする：
 
-The following notebooks are located under the [`Custom_Script/`](Custom_Script/) folder.
+以下のノートブックは [`Custom_Script/`](Custom_Script/) フォルダの下にあります。
 
-| Notebook       | Description                                |
+| ノートブック       | 説明                                |
 |----------------|--------------------------------------------|
-| `02_CustomScript_Training_Pipeline.ipynb`    | Creates a pipeline to train a model for each store and orange juice brand in the dataset using a custom script. |
-| `03_CustomScript_Forecasting_Pipeline.ipynb` | Creates a pipeline to forecast future orange juice sales using the models trained in the previous step.|
+| `02_CustomScript_Training_Pipeline.ipynb`    | カスタム スクリプトを使用してデータセット内の各店舗およびオレンジ ジュース ブランドのモデルをトレーニングするパイプラインを作成します。 |
+| `03_CustomScript_Forecasting_Pipeline.ipynb` | 前の手順でトレーニングされたモデルを使用して、将来のオレンジジュースの売上を予測するパイプラインを作成します。 |
 
-### Using Automated ML to train the models:
+### 自動化された ML を使用してモデルをトレーニングする：
 
-The following notebooks are located under the [`Automated_ML/`](Automated_ML/) folder.
+以下のノートブックは、[`Automated_ML/`](Automated_ML/) フォルダの下にあります。
 
-
-| Notebook       | Description                                |
+| ノートブック       | 説明                                |
 |----------------|--------------------------------------------|
-| `02_AutoML_Training_Pipeline.ipynb`    | Creates a pipeline to train a model for each store and orange juice brand in the dataset using Automated ML.  |
-| `03_AutoML_Forecasting_Pipeline.ipynb` | Creates a pipeline to forecast future orange juice sales using the models trained in the previous step.  |
+| `02_AutoML_Training_Pipeline.ipynb`    | 自動 ML を使用して、データセット内の各店舗およびオレンジ ジュース ブランドのモデルをトレーニングするパイプラインを作成します。 |
+| `03_AutoML_Forecasting_Pipeline.ipynb` | 前の手順でトレーニングされたモデルを使用して、将来のオレンジジュースの売上を予測するパイプラインを作成します。 |
 
-## How-to-videos
+## 使い方ビデオ
 
-Watch these how-to-videos for a step by step walk-through of the many model solution accelerator to learn how to setup your models using both the custom training script and Automated ML.
+Many models ソリューション アクセラレータの手順をステップごとに説明するこれらのハウツービデオを見て、カスタム トレーニング スクリプトと自動 ML の両方を使用してモデルを設定する方法を学習します。
 
-### Custom Script
+### カスタム スクリプト
 
 [![Watch the video](https://media.giphy.com/media/dWUKfameudyNGRnp1t/giphy.gif)](https://channel9.msdn.com/Shows/Docs-AI/Building-Large-Scale-Machine-Learning-Models-using-Azure-Machine-Learning)
 
-### Automated ML
+### 自動化されたML
 
 [![Watch the video](https://media.giphy.com/media/dWUKfameudyNGRnp1t/giphy.gif)](https://channel9.msdn.com/Shows/Docs-AI/Building-Large-Scale-Machine-Learning-Forecasting-Models-using-Azure-Machine-Learnings-Automated-ML)
 
-## Key concepts
+## 主要なコンセプト
 
 ### ParallelRunStep
 
-[ParallelRunStep](https://docs.microsoft.com/en-us/python/api/azureml-pipeline-steps/azureml.pipeline.steps.parallel_run_step.parallelrunstep?view=azure-ml-py) enables the parallel training of models and is commonly used for batch inferencing. This [document](https://docs.microsoft.com/azure/machine-learning/how-to-use-parallel-run-step) walks through some of the key concepts around ParallelRunStep.
+[ParallelRunStep](https://docs.microsoft.com/ja-jp/python/api/azureml-pipeline-steps/azureml.pipeline.steps.parallel_run_step.parallelrunstep?view=azure-ml-py)は、モデルの並列トレーニングを可能にし、一般的にバッチ推論に使用されます。この[ドキュメント](https://docs.microsoft.com/ja-jp/azure/machine-learning/tutorial-pipeline-batch-scoring-classification)では、ParallelRunStep に関する主要なコンセプトについて説明します。
 
-### Pipelines
+### パイプライン
 
-[Pipelines](https://docs.microsoft.com/azure/machine-learning/concept-ml-pipelines) allow you to create workflows in your machine learning projects. These workflows have a number of benefits including speed, simplicity, repeatability, and modularity.
+[パイプライン](https://docs.microsoft.com/ja-jp/azure/machine-learning/concept-ml-pipelines)を使用すると、機械学習プロジェクトにワークフローを作成できます。これらのワークフローには、実行速度、簡易性、繰り返し性、モジュール性など、多くの利点があります。
 
-### Automated Machine Learning
+### 自動機械学習 (Automated Machine Learnin)
 
-[Automated Machine Learning](https://docs.microsoft.com/azure/machine-learning/concept-automated-ml) also referred to as automated ML or AutoML, is the process of automating the time consuming, iterative tasks of machine learning model development. It allows data scientists, analysts, and developers to build ML models with high scale, efficiency, and productivity all while sustaining model quality.
+[自動機械学習](https://docs.microsoft.com/ja-jp/azure/machine-learning/concept-automated-ml)は、自動化された ML または AutoML とも呼ばれ、時間のかかる反復的な作業を自動化するプロセスです。データ サイエンティスト、アナリスト、および開発者は、モデルの品質を維持しながら、高い拡張性、効率性、生産性を備えた ML モデルを構築できます。
 
-### Other Concepts
+### その他のコンセプト
 
-In additional to ParallelRunStep, Pipelines and Automated Machine Learning, you'll also be working with the following concepts including [workspace](https://docs.microsoft.com/azure/machine-learning/concept-workspace), [datasets](https://docs.microsoft.com/azure/machine-learning/concept-data#datasets), [compute targets](https://docs.microsoft.com/azure/machine-learning/concept-compute-target#train), [python script steps](https://docs.microsoft.com/python/api/azureml-pipeline-steps/azureml.pipeline.steps.python_script_step.pythonscriptstep?view=azure-ml-py), and [Azure Open Datasets](https://azure.microsoft.com/services/open-datasets/).
+ParallelRunStep、パイプライン、自動機械学習の他にも、[ワークスペース](https://docs.microsoft.com/ja-jp/azure/machine-learning/concept-workspace)、[データセット](https://docs.microsoft.com/ja-jp/azure/machine-learning/concept-data#datasets)、[コンピューティング ターゲット](https://docs.microsoft.com/ja-jp/azure/machine-learning/concept-compute-target#train)、[PythonScriptStep](https://docs.microsoft.com/ja-jp/python/api/azureml-pipeline-steps/azureml.pipeline.steps.python_script_step.pythonscriptstep?view=azure-ml-py)、および [Azure Open Datasets](https://azure.microsoft.com/ja-jp/services/open-datasets/)などのコンセプトを使用しています。
 
-## Contributing
+## 貢献
 
-This project welcomes contributions and suggestions. To learn more visit the [contributing](CONTRIBUTING.md) section.
+このプロジェクトは、貢献と提案を歓迎します。詳細については、[貢献](CONTRIBUTING.md)セクションをご覧ください。
 
-Most contributions require you to agree to a Contributor License Agreement (CLA)
-declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+ほとんどの貢献には貢献者が、我々が貢献者の貢献を使用する権利を有し、実際に使用を許可することを宣言する共同使用許諾契約書(CLA)に同意する必要があります。詳細については、https://cla.opensource.microsoft.com を参照してください。
 
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+Pull要求を送信すると、CLA ボットは、CLA を提供し、適切に PR を行う必要があるかどうかを自動的に判断します (たとえば、ステータス チェック、コメントなど)。ボットの指示に従ってください。CLA を使用して、すべてのリポジトリで 1 回だけこれを行う必要があります。
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+このプロジェクトは、[マイクロソフトのオープンソース行動規範 (Microsoft Open Source Code of Conduct)](https://opensource.microsoft.com/codeofconduct/)を採用しています。詳細については、[行動規範に関する FAQ](https://opensource.microsoft.com/codeofconduct/faq/)を参照するか、その他の質問やコメントがある場合には[opencode@microsoft.com](mailto:opencode@microsoft.com) に連絡してください。
